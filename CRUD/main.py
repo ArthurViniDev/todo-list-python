@@ -3,13 +3,11 @@ from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.styles import Style
 from tarefa import tarefas, Tarefa, listar_tarefas, salvar_tarefas, carregar_tarefas
 
-# Estilo para o prompt
 estilo = Style.from_dict({
     'prompt': '#00ffff bold',
     '': '#ffffff',
 })
 
-# Completer inteligente que sugere comandos ou nomes de tarefas
 class ComandoCompleter(Completer):
     def get_completions(self, document, complete_event):
         texto = document.text_before_cursor.lower()
