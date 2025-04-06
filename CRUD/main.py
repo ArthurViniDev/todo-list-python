@@ -3,25 +3,26 @@ from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.styles import Style
 from tarefa import tarefas, Tarefa, listar_tarefas, salvar_tarefas, carregar_tarefas
 
+# Estilo para o prompt
 estilo = Style.from_dict({
     'prompt': '#00ffff bold',
     '': '#ffffff',
 })
 
+# Completer inteligente que sugere comandos ou nomes de tarefas
 class ComandoCompleter(Completer):
     def get_completions(self, document, complete_event):
         texto = document.text_before_cursor.lower()
         palavras = texto.split()
 
-        comandos = ['add', 'list', 'done', 'save', 'exit', 'help']
+        comandos = ['add', 'list', 'done', 'delete', 'save', 'exit', 'help']
 
         if len(palavras) <= 1:
             for cmd in comandos:
                 if cmd.startswith(texto):
                     yield Completion(cmd, start_position=-len(texto))
-
-        elif palavras[0] == "done":
-            parte = texto[len("done "):]
+        elif palavras[0] in ("done", "delete"):
+            parte = texto[len(palavras[0]) + 1:]
             for t in tarefas:
                 if t.descricao.lower().startswith(parte):
                     yield Completion(t.descricao, start_position=-len(parte))
@@ -59,17 +60,27 @@ def main():
                 else:
                     print("❌ Tarefa não encontrada.")
 
+            elif comando == "delete":
+                for t in tarefas:
+                    if t.descricao == argumento:
+                        tarefas.remove(t)
+                        print(f"🗑️ Tarefa removida: {argumento}")
+                        break
+                else:
+                    print("❌ Tarefa não encontrada.")
+
             elif comando == "save":
                 salvar_tarefas()
                 print("💾 Tarefas salvas.")
 
             elif comando == "help":
                 print("Comandos disponíveis:")
-                print("  add <descrição> - Adiciona uma tarefa")
-                print("  list            - Lista todas as tarefas")
-                print("  done <descrição>- Marca como concluída")
-                print("  save            - Salva as tarefas")
-                print("  exit            - Sai do programa")
+                print("  add <descrição>    - Adiciona uma tarefa")
+                print("  list               - Lista todas as tarefas")
+                print("  done <descrição>   - Marca como concluída")
+                print("  delete <descrição> - Remove uma tarefa")
+                print("  save               - Salva as tarefas")
+                print("  exit               - Sai do programa")
 
             elif comando == "exit":
                 salvar_tarefas()

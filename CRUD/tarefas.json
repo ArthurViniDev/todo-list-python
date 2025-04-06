@@ -1,18 +1,14 @@
 [
-    {
-        "descricao": "estudar",
-        "concluida": true
-    },
-    {
-        "descricao": "programar",
-        "concluida": true
-    },
-    {
-        "descricao": "estudar",
-        "concluida": false
-    },
-    {
-        "descricao": "Ler",
-        "concluida": true
-    }
+  {
+    "descricao": "programar",
+    "concluida": true
+  },
+  {
+    "descricao": "Ler",
+    "concluida": true
+  },
+  {
+    "descricao": "estudar",
+    "concluida": true
+  }
 ]
