@@ -1,24 +1,36 @@
 from prompt_toolkit import PromptSession
-from prompt_toolkit.completion import WordCompleter
+from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.styles import Style
 from tarefa import tarefas, Tarefa, listar_tarefas, salvar_tarefas, carregar_tarefas
 
-# Estilo para o prompt
 estilo = Style.from_dict({
     'prompt': '#00ffff bold',
     '': '#ffffff',
 })
 
-# Comandos disponíveis
-comandos = ['add', 'list', 'done', 'save', 'exit', 'help']
-completer = WordCompleter(comandos, ignore_case=True)
+class ComandoCompleter(Completer):
+    def get_completions(self, document, complete_event):
+        texto = document.text_before_cursor.lower()
+        palavras = texto.split()
 
-# Sessão do prompt
-session = PromptSession(completer=completer, style=estilo)
+        comandos = ['add', 'list', 'done', 'save', 'exit', 'help']
+
+        if len(palavras) <= 1:
+            for cmd in comandos:
+                if cmd.startswith(texto):
+                    yield Completion(cmd, start_position=-len(texto))
+
+        elif palavras[0] == "done":
+            parte = texto[len("done "):]
+            for t in tarefas:
+                if t.descricao.lower().startswith(parte):
+                    yield Completion(t.descricao, start_position=-len(parte))
+
+session = PromptSession(completer=ComandoCompleter(), style=estilo)
 
 def main():
     carregar_tarefas()
-    print("✨ Gerenciador de Tarefas Interativo com prompt_toolkit")
+    print("✨ Gerenciador de Tarefas Interativo")
     print("Digite 'help' para ver os comandos disponíveis.")
 
     while True:
